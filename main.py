@@ -45,11 +45,11 @@ def print_time_route(time):
         j=i
         if(i == Start):
             continue
-        jam = int(time[i])
-        menit = int((time[i]-jam)*60)
-        detik = int(((time[i]-jam)*60 - menit)*60)
+        hours = int(time[i])
+        minutes = int((time[i]-hours)*60)
+        seconds = int(((time[i]-hours)*60 - minutes)*60)
         print(f"Rute tercepat dari {Start_input} ke {index[i]}:")
-        print(f"[{jam}:{menit}:{detik}]",end=" ")
+        print(f"[{hours}:{minutes}:{seconds}]",end=" ")
         print(index[j], end=" <-- ")
         while tpred[j] != Start:
             print(index[tpred[j]], end=" <-- ")
