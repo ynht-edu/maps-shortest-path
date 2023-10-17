@@ -57,6 +57,11 @@ def print_time_route(time):
         print(index[Start], end=" ")
         print()
 
+def weight_search(a, b, arr):
+    for i in arr[a]:
+        if(b == i[0]):
+            return i[1]
+
 def add_distance_adj(a, b, w):
     distance_adj_list[index[a]].append([index[b], w])
 
