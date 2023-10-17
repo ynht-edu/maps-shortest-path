@@ -45,16 +45,22 @@ def print_time_route(time):
         j=i
         if(i == Start):
             continue
+        distance_sum = 0
+        node_counter = 1
+        routes = [i]
         hours = int(time[i])
         minutes = int((time[i]-hours)*60)
         seconds = int(((time[i]-hours)*60 - minutes)*60)
         print(f"Rute tercepat dari {Start_input} ke {index[i]}:")
-        print(f"[{hours}:{minutes}:{seconds}]",end=" ")
+        print(f"[{hours} jam {minutes} menit {seconds} detik]",end=" ")
         print(index[j], end=" <-- ")
-        while tpred[j] != Start:
+        while tpred[j] != -1:
             print(index[tpred[j]], end=" <-- ")
+            distance_sum += weight_search(tpred[j], j, distance_adj_list)
+            node_counter += 1
             j = tpred[j]
-        print(index[Start], end=" ")
+            routes.append(j)
+        print(routes, distance_sum, node_counter)
         print()
 
 def weight_search(a, b, arr):
@@ -73,6 +79,8 @@ def add_con(total_con):
     added = [[False for j in range (N+1)] for i in range (N+1)]
     for i in range(total_con):
         a = random.randint(1, N)
+        if(not distance_adj_list[a]):
+            continue
         cont = random.choice(distance_adj_list[a])
         b = cont[0]
         b_index = -1
