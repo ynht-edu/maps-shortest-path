@@ -136,20 +136,15 @@ print()
 
 response = input("Apakah ada kemacetan? \n 1. Ya \n 2. Tidak \n")
 if response == "1":
-    response = input("List kemacetan atau dipilihin random? \n 1. list \n 2. random \n")
-    if(response == "1"):
-        print()
-    elif response == "2":
-        total = random.randint(1, E)
-        print()
-        add_con(total)
-        print()
-        global_distance = distance_dijkstra(N, Start)
-        print()
-        print_dist_route(global_distance)
-        print()
-        time = time_dijkstra(N, Start)
-        print_time_route(time)
+    total = random.randint(1, E)
+    print()
+    add_con(total)
+    global_distance = distance_dijkstra(N, Start)
+    print()
+    print_dist_route(global_distance)
+    print()
+    time = time_dijkstra(N, Start)
+    print_time_route(time)
     
 elif response == "2":
     global_distance = distance_dijkstra(N, Start)
