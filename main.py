@@ -25,10 +25,8 @@ time_adj_list = [[] for i in range (N+1)]
 dpred = [-1 for i in range(N+1)]
 tpred = [-1 for i in range(N+1)]
 q = PriorityQueue()
-distance = [inf for x in range(N+1)]
-time = [inf for x in range(N+1)]
 
-def print_dist_route():
+def print_dist_route(distance):
     for i in range(1, N+1):
         j=i
         if(i == Start):
@@ -42,7 +40,7 @@ def print_dist_route():
         print(index[Start], end=" ")
         print()
 
-def print_time_route():
+def print_time_route(time):
     for i in range(1, N+1):
         j=i
         if(i == Start):
@@ -106,8 +104,7 @@ def distance_dijkstra(N, S):
                 dpred[b] = a
                 distance[b] = distance[a] + w
                 q.put([distance[b], b])
-    for i in range (1, N+1):
-        print(f"Jarak terpendek dari {Start_input} ke {index[i]} adalah {distance[i]} km")
+    return distance
 
 def time_dijkstra(N, S):
     time = [inf for x in range(N+1)]
@@ -127,11 +124,7 @@ def time_dijkstra(N, S):
                 tpred[b] = a
                 time[b] = time[a] + w
                 q.put([time[b], b])
-    for i in range (1, N+1):
-        jam = int(time[i])
-        menit = int((time[i]-jam)*60)
-        detik = int(((time[i]-jam)*60 - menit)*60)
-        print(f"Waktu tempuh tercepat dari {Start_input} ke {index[i]} adalah {time[i]} jam atau {jam} jam {menit} menit {detik} detik")
+    return time
 
 print("Masukkan rute dan jarak:")
 for i in range(E):
@@ -140,12 +133,7 @@ for i in range(E):
     add_time_adj(a, b, int(w))
 
 print()
-distance_dijkstra(N, Start)
 
-print()
-print_dist_route()
-
-print()
 response = input("Apakah ada kemacetan? \n 1. Ya \n 2. Tidak \n")
 if response == "1":
     response = input("List kemacetan atau dipilihin random? \n 1. list \n 2. random \n")
@@ -156,9 +144,15 @@ if response == "1":
         print()
         add_con(total)
         print()
-        time_dijkstra(N, Start)
+        global_distance = distance_dijkstra(N, Start)
+        print()
+        print_dist_route(global_distance)
+        print()
+        time = time_dijkstra(N, Start)
+        print_time_route(time)
     
 elif response == "2":
+    global_distance = distance_dijkstra(N, Start)
     print()
+    print_dist_route(global_distance)
 print()
-print_time_route()
