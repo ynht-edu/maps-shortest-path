@@ -43,7 +43,7 @@ def print_dist_route(distance):
         minutes = int((time_sum-hours)*60)
         seconds = int(((time_sum-hours)*60 - minutes)*60)
         print(f"Rute terpendek dari {Start_input} ke {index[i]}:")
-        print(f"[{hours} jam {minutes} menit {seconds} detik][{distance[i]} km]", end=" ")
+        print(f"[{hours} jam {minutes} menit {seconds} detik][{distance[i]} km]")
         for i in range (node_counter-1, 0, -1):
             print(index[routes[i]], end= " --> ")
         print(index[routes[0]], end=" ")
