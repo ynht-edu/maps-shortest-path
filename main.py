@@ -18,7 +18,7 @@ Start_input = input("Dimulai dari? ")
 Start = index[Start_input]
 End_input = input("Mau ke mana? ")
 End = index[End_input]
-V_avg = int(input("Masukkan kecepatan rata-rata (dalam km/jam): "))
+V_avg = int(input("Masukkan kelajuan rata-rata (dalam km/jam): "))
 print()
 distance_adj_list = [[] for i in range (N+1)]
 time_adj_list = [[] for i in range (N+1)]
@@ -31,13 +31,22 @@ def print_dist_route(distance):
         j=i
         if(i == Start):
             continue
-        print(f"Rute terpendek dari {Start_input} ke {index[i]}:")
-        print(f"[{distance[i]} km]", end=" ")
-        print(index[j], end=" <-- ")
-        while dpred[j] != Start:
-            print(index[dpred[j]], end=" <-- ")
+        time_sum = 0.000000000
+        node_counter = 1
+        routes = [i]
+        while dpred[j] != -1:
+            time_sum += weight_search(dpred[j], j, time_adj_list)
+            node_counter += 1
             j = dpred[j]
-        print(index[Start], end=" ")
+            routes.append(j)
+        hours = int(time_sum)
+        minutes = int((time_sum-hours)*60)
+        seconds = int(((time_sum-hours)*60 - minutes)*60)
+        print(f"Rute terpendek dari {Start_input} ke {index[i]}:")
+        print(f"[{hours} jam {minutes} menit {seconds} detik][{distance[i]} km]", end=" ")
+        for i in range (node_counter-1, 0, -1):
+            print(index[routes[i]], end= " --> ")
+        print(index[routes[0]], end=" ")
         print()
 
 def print_time_route(time):
@@ -52,15 +61,15 @@ def print_time_route(time):
         minutes = int((time[i]-hours)*60)
         seconds = int(((time[i]-hours)*60 - minutes)*60)
         print(f"Rute tercepat dari {Start_input} ke {index[i]}:")
-        print(f"[{hours} jam {minutes} menit {seconds} detik]",end=" ")
-        print(index[j], end=" <-- ")
         while tpred[j] != -1:
-            print(index[tpred[j]], end=" <-- ")
             distance_sum += weight_search(tpred[j], j, distance_adj_list)
             node_counter += 1
             j = tpred[j]
             routes.append(j)
-        print(routes, distance_sum, node_counter)
+        print(f"[{hours} jam {minutes} menit {seconds} detik][{distance_sum} km]")
+        for i in range (node_counter-1, 0, -1):
+            print(index[routes[i]], end= " --> ")
+        print(index[routes[0]], end=" ")
         print()
 
 def weight_search(a, b, arr):
