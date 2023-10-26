@@ -1,25 +1,15 @@
 from queue import PriorityQueue
 import random
+from input1 import N, E
+from input2 import index
+from input3 import Start_input, End_input, V_avg
+from input4 import dari, ke, jarak, response
 
 inf = 99999999
-N = int(input("Masukkan jumlah kota: "))
-E = int(input("Masukkan jumlah jalan: "))
+
 print()
-index = {}
-print("Masukkan kota:")
-def indexing():
-    for i in range (1, N+1):
-        node = input()
-        index[node] = i
-        index[i] = node
-indexing()
-print()
-Start_input = input("Dimulai dari? ")
 Start = index[Start_input]
-End_input = input("Mau ke mana? ")
 End = index[End_input]
-V_avg = int(input("Masukkan kelajuan rata-rata (dalam km/jam): "))
-print()
 distance_adj_list = [[] for i in range (N+1)]
 time_adj_list = [[] for i in range (N+1)]
 dpred = [-1 for i in range(N+1)]
@@ -148,16 +138,13 @@ def time_dijkstra(N, S):
                 q.put([time[b], b])
     return time
 
-print("Masukkan rute dan jarak:")
+
 for i in range(E):
-    a, b, w = input().split()
+    a, b, w = dari[i], ke[i], int(jarak[i])
     add_distance_adj(a, b, int(w))
     add_time_adj(a, b, int(w))
 
-print()
-
-response = input("Apakah ada kemacetan? \n 1. Ya \n 2. Tidak \n")
-if response == "1":
+if response == 1:
     total = random.randint(1, E)
     print()
     add_con(total)
@@ -168,7 +155,7 @@ if response == "1":
     time = time_dijkstra(N, Start)
     print_time_route(time)
     
-elif response == "2":
+else:
     global_distance = distance_dijkstra(N, Start)
     print()
     print_dist_route(global_distance)
