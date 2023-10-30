@@ -26,10 +26,30 @@ dpred = [-1 for i in range(N+1)]
 tpred = [-1 for i in range(N+1)]
 q = PriorityQueue()
 
+def print_dest_dist_route(distance):
+    time_sum = 0.000000000
+    node_counter = 1
+    routes = [End]
+    j = End
+    while dpred[j] != -1:
+        time_sum += weight_search(dpred[j], j, time_adj_list)
+        node_counter += 1
+        j = dpred[j]
+        routes.append(j)
+    hours = int(time_sum)
+    minutes = int((time_sum-hours)*60)
+    seconds = int(((time_sum-hours)*60 - minutes)*60)
+    print(f"==|Rute terpendek dari {Start_input} ke {index[End]}:|==")
+    print(f"[{hours} jam {minutes} menit {seconds} detik][{distance[End]} km]")
+    for i in range (node_counter-1, 0, -1):
+        print(index[routes[i]], end= " --> ")
+    print(index[routes[0]], end=" ")
+    print()
+
 def print_dist_route(distance):
     for i in range(1, N+1):
         j=i
-        if(i == Start):
+        if(i == Start or i == End):
             continue
         time_sum = 0.000000000
         node_counter = 1
@@ -49,10 +69,30 @@ def print_dist_route(distance):
         print(index[routes[0]], end=" ")
         print()
 
+def print_dest_time_route(time):
+    j=End
+    distance_sum = 0
+    node_counter = 1
+    routes = [End]
+    hours = int(time[End])
+    minutes = int((time[End]-hours)*60)
+    seconds = int(((time[End]-hours)*60 - minutes)*60)
+    print(f"====|Rute tercepat dari {Start_input} ke {index[End]}:|====")
+    while tpred[j] != -1:
+        distance_sum += weight_search(tpred[j], j, distance_adj_list)
+        node_counter += 1
+        j = tpred[j]
+        routes.append(j)
+    print(f"[{hours} jam {minutes} menit {seconds} detik][{distance_sum} km]")
+    for i in range (node_counter-1, 0, -1):
+        print(index[routes[i]], end= " --> ")
+    print(index[routes[0]], end=" ")
+    print()
+
 def print_time_route(time):
     for i in range(1, N+1):
         j=i
-        if(i == Start):
+        if(i == Start or i == End):
             continue
         distance_sum = 0
         node_counter = 1
@@ -163,13 +203,19 @@ if response == "1":
     add_con(total)
     global_distance = distance_dijkstra(N, Start)
     print()
+    print_dest_dist_route(global_distance)
+    print("\nRute lain:")
     print_dist_route(global_distance)
-    print()
+    print("\n")
     time = time_dijkstra(N, Start)
+    print_dest_time_route(time)
+    print("\nRute lain:")
     print_time_route(time)
     
 elif response == "2":
     global_distance = distance_dijkstra(N, Start)
     print()
+    print_dest_dist_route(global_distance)
+    print("\nRute lain:")
     print_dist_route(global_distance)
 print()
