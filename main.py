@@ -281,7 +281,7 @@ for i in range(E):
 
 print()
 
-response = input("Apakah ada kemacetan? \n 1. Ya \n 2. Tidak \n")
+response = input("Apakah ada kemacetan? \nKetik 1 untuk ya \nKetik 2 untuk tidak \n")
 os.system('cls')
 if response == "1":
     total = random.randint(1, E)
