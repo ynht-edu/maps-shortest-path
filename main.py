@@ -1,12 +1,19 @@
 from queue import PriorityQueue
+from rich import print
+from rich.console import Console
+from rich.table import Table
+from rich.align import Align
+from rich.live import Live
+import os
 import random
 
+
 inf = 99999999
-N = int(input("Masukkan jumlah kota: "))
+N = int(input("Masukkan jumlah kota atau simpangan: "))
 E = int(input("Masukkan jumlah jalan: "))
 print()
 index = {}
-print("Masukkan kota:")
+print("Masukkan kota atau simpangan:")
 def indexing():
     for i in range (1, N+1):
         node = input()
@@ -39,14 +46,37 @@ def print_dest_dist_route(distance):
     hours = int(time_sum)
     minutes = int((time_sum-hours)*60)
     seconds = int(((time_sum-hours)*60 - minutes)*60)
-    print(f"==|Rute terpendek dari {Start_input} ke {index[End]}:|==")
-    print(f"[{hours} jam {minutes} menit {seconds} detik][{distance[End]} km]")
+    routes_string= ""
     for i in range (node_counter-1, 0, -1):
-        print(index[routes[i]], end= " --> ")
-    print(index[routes[0]], end=" ")
-    print()
+        routes_string += index[routes[i]] + " --> "
+    routes_string += index[routes[0]]
+
+    console = Console()
+    table = Table(title="Rute Destinasi dengan Jarak Terdekat", show_footer=False)
+    table_centered = Align.center(table)
+    with Live(table_centered, console=console,
+            screen=False):
+        table.add_column("Tujuan", style="yellow1", no_wrap=True)
+        table.add_column("Rute", style="light_goldenrod1", no_wrap=True)
+        table.add_column("Jarak", style="khaki1", no_wrap=True)
+        table.add_column("Waktu Tempuh", style="wheat1", no_wrap=True)
+        table.add_row(f"{index[routes[0]]}", routes_string, f"{distance[End]} km", f"{hours} jam {minutes} menit {seconds} detik")
+        table_width = console.measure(table).maximum
+        table.width = None
+
 
 def print_dist_route(distance):
+    console = Console()
+    table = Table(title="Rute Lain dengan Jarak Terdekat:", show_footer=False)
+    table.add_column("Tujuan", style="green1", no_wrap=True)
+    table.add_column("Rute", style="spring_green2", no_wrap=True)
+    table.add_column("Jarak", style="spring_green1", no_wrap=True)
+    table.add_column("Waktu tempuh", style="cyan2", no_wrap=True)
+
+
+    route_string = ["" for i in range (1, N+1)]
+    time_string = ["" for i in range (1, N+1)]
+    dist_string = ["" for i in range (1, N+1)]
     for i in range(1, N+1):
         j=i
         if(i == Start or i == End):
@@ -62,34 +92,64 @@ def print_dist_route(distance):
         hours = int(time_sum)
         minutes = int((time_sum-hours)*60)
         seconds = int(((time_sum-hours)*60 - minutes)*60)
-        print(f"Rute terpendek dari {Start_input} ke {index[i]}:")
-        print(f"[{hours} jam {minutes} menit {seconds} detik][{distance[i]} km]")
-        for i in range (node_counter-1, 0, -1):
-            print(index[routes[i]], end= " --> ")
-        print(index[routes[0]], end=" ")
-        print()
+        time_string[i] = f"{hours} jam {minutes} menit {seconds} detik"
+        dist_string[i] = f"{distance[i]} km"
+        for k in range (node_counter-1, 0, -1):
+            route_string[i] += index[routes[k]] + " --> "
+        route_string[i] += index[routes[0]]
+        table.add_row(index[routes[0]], route_string[i], dist_string[i], time_string[i])
+
+    table_centered = Align.center(table)
+
+    with Live(table_centered, console=console,
+            screen=False):
+
+        table_width = console.measure(table).maximum
+
+        table.width = None
 
 def print_dest_time_route(time):
     j=End
     distance_sum = 0
     node_counter = 1
     routes = [End]
+    routes_string = ""
     hours = int(time[End])
     minutes = int((time[End]-hours)*60)
     seconds = int(((time[End]-hours)*60 - minutes)*60)
-    print(f"====|Rute tercepat dari {Start_input} ke {index[End]}:|====")
     while tpred[j] != -1:
         distance_sum += weight_search(tpred[j], j, distance_adj_list)
         node_counter += 1
         j = tpred[j]
         routes.append(j)
-    print(f"[{hours} jam {minutes} menit {seconds} detik][{distance_sum} km]")
-    for i in range (node_counter-1, 0, -1):
-        print(index[routes[i]], end= " --> ")
-    print(index[routes[0]], end=" ")
-    print()
+    for k in range (node_counter-1, 0, -1):
+        routes_string += index[routes[k]] + " --> "
+    routes_string += index[routes[0]]
+
+    console = Console()
+    table = Table(title="Rute Destinasi dengan Waktu Tempuh Tercepat", show_footer=False)
+    table_centered = Align.center(table)
+    with Live(table_centered, console=console,
+            screen=False):
+        table.add_column("Tujuan", style="yellow1", no_wrap=True)
+        table.add_column("Rute", style="light_goldenrod1", no_wrap=True)
+        table.add_column("Jarak", style="khaki1", no_wrap=True)
+        table.add_column("Waktu Tempuh", style="wheat1", no_wrap=True)
+        table.add_row(f"{index[routes[0]]}", routes_string, f"{distance_sum} km", f"{hours} jam {minutes} menit {seconds} detik")
+
+        table_width = console.measure(table).maximum
+
+        table.width = None
+
 
 def print_time_route(time):
+    console = Console()
+    table = Table(title="Rute Lain dengan Waktu Tempuh Tercepat:", show_footer=False)
+    table.add_column("Tujuan", style="green1", no_wrap=True)
+    table.add_column("Rute", style="spring_green2", no_wrap=True)
+    table.add_column("Jarak", style="spring_green1", no_wrap=True)
+    table.add_column("Waktu tempuh", style="cyan2", no_wrap=True)
+
     for i in range(1, N+1):
         j=i
         if(i == Start or i == End):
@@ -97,20 +157,28 @@ def print_time_route(time):
         distance_sum = 0
         node_counter = 1
         routes = [i]
+        routes_string = ""
         hours = int(time[i])
         minutes = int((time[i]-hours)*60)
         seconds = int(((time[i]-hours)*60 - minutes)*60)
-        print(f"Rute tercepat dari {Start_input} ke {index[i]}:")
         while tpred[j] != -1:
             distance_sum += weight_search(tpred[j], j, distance_adj_list)
             node_counter += 1
             j = tpred[j]
             routes.append(j)
-        print(f"[{hours} jam {minutes} menit {seconds} detik][{distance_sum} km]")
-        for i in range (node_counter-1, 0, -1):
-            print(index[routes[i]], end= " --> ")
-        print(index[routes[0]], end=" ")
-        print()
+        dist_string = f"{distance_sum} km"
+        time_string = f"{hours} jam {minutes} menit {seconds} detik"
+        for k in range (node_counter-1, 0, -1):
+            routes_string += index[routes[k]] + " --> "
+        routes_string += index[routes[0]]
+        table.add_row(index[i], routes_string, dist_string, time_string)
+
+    table_centered = Align.center(table)
+    with Live(table_centered, console=console,
+            screen=False):
+        table_width = console.measure(table).maximum
+        table.width = None
+
 
 def weight_search(a, b, arr):
     for i in arr[a]:
@@ -124,7 +192,15 @@ def add_time_adj(a, b, s):
     t = float(float(s)/float(V_avg))
     time_adj_list[index[a]].append([index[b], t])
 
-def add_con(total_con): 
+def add_con(total_con):
+    console = Console()
+    table = Table(title="Data Kemacetan", show_footer=False)
+    table.add_column("Dari", style="red1", no_wrap=True)
+    table.add_column("ke", style="deep_pink2", no_wrap=True)
+    table.add_column("Jarak", style="deep_pink1", no_wrap=True)
+    table.add_column("Kelajuan Rata-Rata Kendaraan", style="magenta2", no_wrap=True)
+
+    traffic_jam_string = [""]
     added = [[False for j in range (N+1)] for i in range (N+1)]
     for i in range(total_con):
         a = random.randint(1, N)
@@ -137,8 +213,8 @@ def add_con(total_con):
         if(added[a][b]):
             continue
         counter = 0
-        for i in distance_adj_list[a]:
-            if(b == i[0]):
+        for j in distance_adj_list[a]:
+            if(b == j[0]):
                 b_index = counter
             counter+=1
         added[a][b] = True
@@ -146,7 +222,16 @@ def add_con(total_con):
         x = random.randint(1, dist)
         t = float((dist-x)/V_avg + x/v)
         time_adj_list[a][b_index][1] = t
-        print(f"Terjadi kemacetan dari {index[a]} ke {index[b]} sejauh {x} km dengan kelajuan rata-rata kendaraaan {v} km/jam")
+        table.add_row(index[a], index[b], str(x) + " km", str(v) + " km/jam")
+        traffic_jam_string.append(f"Terjadi kemacetan dari {index[a]} ke {index[b]} sejauh {x} km dengan kelajuan rata-rata kendaraaan {v} km/jam")
+
+    table_centered = Align.center(table)
+    with Live(table_centered, console=console,
+            screen=False):
+
+        table_width = console.measure(table).maximum
+
+        table.width = None
 
 def distance_dijkstra(N, S):
     distance = [inf for x in range(N+1)]
@@ -188,7 +273,7 @@ def time_dijkstra(N, S):
                 q.put([time[b], b])
     return time
 
-print("Masukkan rute dan jarak:")
+print("Masukkan rute dan jarak (dalam km): \n\[dari] \[ke] \[jarak] \nex: ciamis tasikmalaya [grey85]20[/grey85] \n")
 for i in range(E):
     a, b, w = input().split()
     add_distance_adj(a, b, int(w))
@@ -197,25 +282,24 @@ for i in range(E):
 print()
 
 response = input("Apakah ada kemacetan? \n 1. Ya \n 2. Tidak \n")
+os.system('cls')
 if response == "1":
     total = random.randint(1, E)
-    print()
     add_con(total)
-    global_distance = distance_dijkstra(N, Start)
-    print()
-    print_dest_dist_route(global_distance)
-    print("\nRute lain:")
-    print_dist_route(global_distance)
     print("\n")
+    global_distance = distance_dijkstra(N, Start)
+    print_dest_dist_route(global_distance)
+    print()
+    print_dist_route(global_distance)
+    print()
     time = time_dijkstra(N, Start)
     print_dest_time_route(time)
-    print("\nRute lain:")
+    print()
     print_time_route(time)
-    
+    print()
+
 elif response == "2":
     global_distance = distance_dijkstra(N, Start)
-    print()
     print_dest_dist_route(global_distance)
-    print("\nRute lain:")
+    print()
     print_dist_route(global_distance)
-print()
