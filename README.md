@@ -8,3 +8,6 @@ This is actually my uni coursework assignment. I replicate e-maps shortest or fa
 - Random congestion case.
 - Evaluate the fastest route to the destinated city based on possible time.
 - The possible time is determined by the average speed and congestion case (the length of the congestion and average speed of user while the congestion happens).
+
+## Limitation:
+For the disconnected nodes, the distance or time will appear as an infinite value.
